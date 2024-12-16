@@ -1,0 +1,38 @@
+{
+  "profiles": {
+    "KafkaConsumer": {
+      "commandName": "Project",
+      "environmentVariables": {
+        "KAFKA_SERVER": "strix-flotas-test-msk-nlb-1bbadb95a94e221a.elb.us-east-1.amazonaws.com:9092",
+        "KAFKA_CONSUMER_GROUP": "mrn:kafka:consumer_group:tsdb_writer:vehicle_signal",
+        "KAFKA_TOPICO_VEHICLE": "com.magenta.thing.vehicle.state_signal",
+        "KAFKA_TOPICO_FLEX": "com.magenta.thing.flex.state_signal",
+        "KAFKA_TOPICO_GPS": "com.magenta.thing.gps.state_signal",
+        "RECONNECT_WAIT_SECONDS": "15",
+        "RECONNECT_MAX_TRIES": "3",
+        "MAX_PARALLEL_TASKS": "10",
+        "TIME_TO_DISCARD_MESSAGES": "3",
+        "KAFKA_TOPICO_VEHICLE_LOCAL": "quickstart-events",
+        "KAFKA_SERVER_LOCAL": "localhost:9092",
+        "KAFKA_CONSUMER_GROUP_LOCAL": "test_flujo"
+      }
+    },
+    "Container (Dockerfile)": {
+      "commandName": "Docker",
+      "environmentVariables": {
+        "KAFKA_SERVER": "strix-flotas-test-msk-nlb-1bbadb95a94e221a.elb.us-east-1.amazonaws.com:9092",
+        "KAFKA_CONSUMER_GROUP": "mrn:kafka:consumer_group:tsdb_writer:vehicle_signal",
+        "KAFKA_TOPICO_VEHICLE": "com.magenta.thing.vehicle.state_signal",
+        "KAFKA_TOPICO_FLEX": "com.magenta.thing.flex.state_signal",
+        "KAFKA_TOPICO_GPS": "com.magenta.thing.gps.state_signal",
+        "RECONNECT_WAIT_SECONDS": "15",
+        "RECONNECT_MAX_TRIES": "3",
+        "MAX_PARALLEL_TASKS": "10",
+        "TIME_TO_DISCARD_MESSAGES": "3",
+        "KAFKA_TOPICO_VEHICLE_LOCAL": "quickstart-events",
+        "KAFKA_SERVER_LOCAL": "localhost:9092",
+        "KAFKA_CONSUMER_GROUP_LOCAL": "test_flujo"
+      }
+    }
+  }
+}

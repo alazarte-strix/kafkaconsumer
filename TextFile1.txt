@@ -1,0 +1,19 @@
+﻿docker build -t 193819503747.dkr.ecr.us-east-1.amazonaws.com/kafkaconsumer:1.0.0.RC .
+docker push 193819503747.dkr.ecr.us-east-1.amazonaws.com/kafkaconsumer:1.0.0.RC
+
+-------------------------
+--Despliegue en Rancher--
+-------------------------
+kubectl config current-context
+kustomize build k8s/test-aws/lojack/application-services/kafkaconsumer/ > kafkaconsumer.yaml
+kubectl apply -f kafkaconsumer.yaml
+
+Environment vars
+      - env:
+        - name: KAFKA_SERVER
+          value: strix-flotas-test-msk-nlb-1bbadb95a94e221a.elb.us-east-1.amazonaws.com:9092
+        - name: KAFKA_CONSUMER_GROUP
+          value: mrn:kafka:consumer_group:integracion:sou
+        - name: KAFKA_TOPICO_VEHICLE
+          value: com.magenta.thing.vehicle.security_event
+        image: 193819503747.dkr.ecr.us-east-1.amazonaws.com/kafkaconsumer:1.0.0.RC
