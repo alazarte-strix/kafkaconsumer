@@ -1,5 +1,7 @@
 ﻿using Confluent.Kafka;
 using System.Diagnostics;
+using System.Text;
+using System.Text.Json;
 
 public class Program
 {
@@ -258,7 +260,24 @@ public class Program
         try
         {
             Console.WriteLine($"Procesando mensaje: {message}");
-            await Task.Delay(500); // Simula el procesamiento de la señal de posición para las integraciones
+
+            using var client = new HttpClient();
+            client.BaseAddress = new Uri(Environment.GetEnvironmentVariable("SOU_BASE_URL") ?? "https://dev.api.strixlatam.com");
+
+            // Serializar el mensaje como un JSON válido
+            var content = new StringContent(JsonSerializer.Serialize(message), Encoding.UTF8, "application/json");
+
+            // Enviar el mensaje a la API
+            var response = await client.PostAsync("", content);
+
+            if (response.IsSuccessStatusCode)
+            {
+                Console.WriteLine($"Mensaje enviado con éxito. Respuesta: {await response.Content.ReadAsStringAsync()}");
+            }
+            else
+            {
+                Console.WriteLine($"Error al enviar el mensaje: {response.StatusCode} - {await response.Content.ReadAsStringAsync()}");
+            }
         }
         finally
         {

@@ -14,7 +14,11 @@
         "TIME_TO_DISCARD_MESSAGES": "3",
         "KAFKA_TOPICO_VEHICLE_LOCAL": "quickstart-events",
         "KAFKA_SERVER_LOCAL": "localhost:9092",
-        "KAFKA_CONSUMER_GROUP_LOCAL": "test_flujo"
+        "KAFKA_CONSUMER_GROUP_LOCAL": "test_flujo",
+        "SOU_BASE_URL": "https://dev.api.strixlatam.com",
+        "SOU_CLIENT_ID": "urn:lojack:sdg:users:magenta-flotas",
+        "SOU_CLIENT_SECRET": "Z2X38Qv4C7UqtxLKYhjTfy9kFsH5WPRz",
+        "MAGENTA_URL": "https://api.test.aws.flotas.strix.com.ar"
       }
     },
     "Container (Dockerfile)": {
@@ -31,7 +35,11 @@
         "TIME_TO_DISCARD_MESSAGES": "3",
         "KAFKA_TOPICO_VEHICLE_LOCAL": "quickstart-events",
         "KAFKA_SERVER_LOCAL": "localhost:9092",
-        "KAFKA_CONSUMER_GROUP_LOCAL": "test_flujo"
+        "KAFKA_CONSUMER_GROUP_LOCAL": "test_flujo",
+        "SOU_BASE_URL": "https://dev.api.strixlatam.com",
+        "SOU_CLIENT_ID": "urn:lojack:sdg:users:magenta-flotas",
+        "SOU_CLIENT_SECRET": "Z2X38Qv4C7UqtxLKYhjTfy9kFsH5WPRz",
+        "MAGENTA_URL": "https://api.test.aws.flotas.strix.com.ar"
       }
     }
   }
