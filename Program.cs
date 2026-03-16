@@ -1,7 +1,8 @@
 ﻿using Confluent.Kafka;
+using KafkaConsumer;
+using Microsoft.Extensions.DependencyInjection;
+using Microsoft.Extensions.Logging;
 using System.Diagnostics;
-using System.Text;
-using System.Text.Json;
 
 public class Program
 {
@@ -13,9 +14,27 @@ public class Program
     private static long _totalProcessingTimeMs = 0;
     private static SemaphoreSlim _semaphore; // Para control de tareas concurrentes
     private static int _timeToDiscardMessage = 3;
+    private static ISOUService _souService;
+    private static IServiceProvider _serviceProvider;
+    private static Timer _retryTimer;
 
     public static async Task Main(string[] args)
     {
+        // Configura los servicios
+        var serviceCollection = new ServiceCollection();
+        ConfigureServices(serviceCollection);
+
+        // Construye el proveedor de servicios
+        _serviceProvider = serviceCollection.BuildServiceProvider();
+
+        // Obtén el servicio de SOUService desde el contenedor
+        var souService = _serviceProvider.GetRequiredService<ISOUService>();
+
+
+        // Inicializar el servicio
+        _souService = souService;
+
+
         // Validar la configuración de conexión a Kafka
         var topic = Environment.GetEnvironmentVariable("KAFKA_TOPICO_VEHICLE_LOCAL");
         var bootstrapServers = Environment.GetEnvironmentVariable("KAFKA_SERVER_LOCAL");
@@ -74,6 +93,11 @@ public class Program
 
         var metricsTimer = new Timer(ShowMetrics, null, TimeSpan.Zero, TimeSpan.FromSeconds(30));
 
+        _retryTimer = new Timer(async _ =>
+        {
+            await _souService.RetryFailedMessagesAsync();
+        }, null, TimeSpan.Zero, TimeSpan.FromSeconds(45));
+
         // Intentar conectar y verificar la conexion inicial
         bool isConnected = await RetryConnectToCluster(bootstrapServers, _maxRetries, _delayBetweenRetriesSeconds);
 
@@ -113,9 +137,22 @@ public class Program
             Console.WriteLine($"Error inesperado: {ex.Message}");
         }
 
+        _retryTimer.Dispose();
         metricsTimer.Dispose();
         ShowMetrics(null);
         Environment.Exit(1);
+    }
+
+    private static void ConfigureServices(IServiceCollection services)
+    {
+        // Agrega soporte de logging
+        services.AddLogging(configure =>
+        {
+            configure.AddConsole(); // Agrega logging en la consola
+        });
+
+        // Registra los servicios personalizados
+        services.AddSingleton<ISOUService, SOUService>(); // Vincula ISOUService a SOUService
     }
 
     private static async Task HandleReconnection(string bootstrapServers, int maxRetries, int delayBetweenRetriesSeconds)
@@ -164,7 +201,7 @@ public class Program
         {
             try
             {
-                var cr = consumer.Consume(TimeSpan.FromSeconds(5));
+                var cr = consumer.Consume(TimeSpan.FromSeconds(10));
 
                 if (cr != null)
                 {
@@ -176,7 +213,7 @@ public class Program
                     if (messageTimestamp < DateTime.UtcNow.AddMinutes(_timeToDiscardMessage*(-1)))
                     {
                         Interlocked.Increment(ref _discardedMessages);
-                        Console.WriteLine($"Descartado mensaje viejo {cr.Message.Value}");
+                        Console.WriteLine($"Descartado mensaje viejo");
                         continue;
                     }
 
@@ -255,34 +292,12 @@ public class Program
 
     private static async Task ProcessMessageAsync(string message)
     {
-        await _semaphore.WaitAsync(); // Esperar a que haya un espacio disponible para procesar el mensaje
-
-        try
+        if (_souService == null)
         {
-            Console.WriteLine($"Procesando mensaje: {message}");
-
-            using var client = new HttpClient();
-            client.BaseAddress = new Uri(Environment.GetEnvironmentVariable("SOU_BASE_URL") ?? "https://dev.api.strixlatam.com");
-
-            // Serializar el mensaje como un JSON válido
-            var content = new StringContent(JsonSerializer.Serialize(message), Encoding.UTF8, "application/json");
-
-            // Enviar el mensaje a la API
-            var response = await client.PostAsync("", content);
-
-            if (response.IsSuccessStatusCode)
-            {
-                Console.WriteLine($"Mensaje enviado con éxito. Respuesta: {await response.Content.ReadAsStringAsync()}");
-            }
-            else
-            {
-                Console.WriteLine($"Error al enviar el mensaje: {response.StatusCode} - {await response.Content.ReadAsStringAsync()}");
-            }
+            throw new InvalidOperationException("El servicio SOU no está inicializado.");
         }
-        finally
-        {
-            _semaphore.Release(); // Liberar el espacio para que otras tareas puedan comenzar
-        }
+
+        await _souService.SendSOUAsync(message);
     }
 
     private static async Task<bool> HandleConsumeErrorAsync(ConsumeException ex, int maxRetries, int delayBetweenRetriesSeconds)
