@@ -15,9 +15,9 @@
         "KAFKA_TOPICO_VEHICLE_LOCAL": "quickstart-events",
         "KAFKA_SERVER_LOCAL": "localhost:9092",
         "KAFKA_CONSUMER_GROUP_LOCAL": "test_flujo",
-        "SOU_BASE_URL": "https://msa-dev.api.lojacklatam.com",
-        "SOU_CLIENT_ID": "W6paBXnLYQSAa2zwvfs6V4rBGNCx3K6P",
-        "SOU_CLIENT_SECRET": "ykJangSyTcv8ACZF5u5e8MAPaC39Yn2b",
+        "SOU_BASE_URL": "https://dev.api.strixlatam.com",
+        "SOU_CLIENT_ID": "urn:lojack:sdg:users:magenta-flotas",
+        "SOU_CLIENT_SECRET": "Z2X38Qv4C7UqtxLKYhjTfy9kFsH5WPRz",
         "MAGENTA_URL": "https://api.test.aws.flotas.strix.com.ar"
       }
     },
@@ -36,9 +36,9 @@
         "KAFKA_TOPICO_VEHICLE_LOCAL": "quickstart-events",
         "KAFKA_SERVER_LOCAL": "localhost:9092",
         "KAFKA_CONSUMER_GROUP_LOCAL": "test_flujo",
-        "SOU_BASE_URL": "https://msa-dev.api.lojacklatam.com",
-        "SOU_CLIENT_ID": "W6paBXnLYQSAa2zwvfs6V4rBGNCx3K6P",
-        "SOU_CLIENT_SECRET": "ykJangSyTcv8ACZF5u5e8MAPaC39Yn2b",
+        "SOU_BASE_URL": "https://dev.api.strixlatam.com",
+        "SOU_CLIENT_ID": "urn:lojack:sdg:users:magenta-flotas",
+        "SOU_CLIENT_SECRET": "Z2X38Qv4C7UqtxLKYhjTfy9kFsH5WPRz",
         "MAGENTA_URL": "https://api.test.aws.flotas.strix.com.ar"
       }
     }

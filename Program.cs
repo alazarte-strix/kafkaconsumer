@@ -35,7 +35,7 @@ public class Program
         _souService = souService;
 
 
-        // Validar la configuración de conexión a Kafka
+        // Validar la configuración de conexión a Kafka 
         var topic = Environment.GetEnvironmentVariable("KAFKA_TOPICO_VEHICLE_LOCAL");
         var bootstrapServers = Environment.GetEnvironmentVariable("KAFKA_SERVER_LOCAL");
         var consumerGroup = Environment.GetEnvironmentVariable("KAFKA_CONSUMER_GROUP_LOCAL");

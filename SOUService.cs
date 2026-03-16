@@ -93,7 +93,7 @@ namespace KafkaConsumer
                         _httpClient.DefaultRequestHeaders.Add("Authorization", $"Bearer {_token}");
 
                         var random = new Random();
-                        bool simulateFailure = random.Next(0, 2) == 0; // Genera un 50% de probabilidad de fallo
+                        bool simulateFailure = false; //random.Next(0, 2) == 0; // Genera un 50% de probabilidad de fallo
 
                         if (simulateFailure)
                         {
